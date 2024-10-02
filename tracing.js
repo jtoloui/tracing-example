@@ -34,20 +34,14 @@ const sdk = new NodeSDK({
 	instrumentations: [getNodeAutoInstrumentations({
 		'@opentelemetry/instrumentation-express': {
 			ignoreLayersType: ['request_handler', 'middleware'],
-			ignoreLayers: [(name, type) => {
-				console.log(name === '/ping');
-
-				return name === '/ping'; // Ignore /ping route
-			}],
 		},
 		'@opentelemetry/instrumentation-http': {
 			ignoreIncomingRequestHook: (req) => {
-				return req.url === '/ping'; // Ignore /ping route
+				return ['/ping'].includes(req.url); // Ignore /ping route
 			},
 		}
 	})],
 	serviceName: 'express-app',
-
 });
 
 // Start the SDK (which initializes tracing)
